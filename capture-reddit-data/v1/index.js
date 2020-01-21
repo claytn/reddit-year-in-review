@@ -1,3 +1,6 @@
+/** import environment variables to process.env */
+require("dotenv").config();
+
 const R = require("ramda");
 const aws = require("aws-sdk");
 const snoowrap = require("snoowrap");
@@ -5,24 +8,16 @@ const { format } = require("date-fns");
 
 aws.config.update({
   region: "us-east-2",
-  accessKeyId: "AKIAIGN4Z4UA6UN6KLJQ",
-  secretAccessKey: "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"
-});
-
-const r = new snoowrap({
-  userAgent: "/u/bletchley-park",
-  clientId: "YODM9LPkHuGXYw",
-  clientSecret: "93tH3ZP2kEwDMXtwsJc12y1IBF4",
-  username: "bletchley-park",
-  password: "PrWVWVE35*a3a0C0zBP^A1Y9LT*Aum@6"
+  accessKeyId: process.env.ACCESS_KEY_ID,
+  secretAccessKey: process.env.SECRET_ACCESS_KEY
 });
 
 const db = new aws.DynamoDB({ apiVersion: "2012-08-10" });
 
-const getPopularSubreddits = () =>
+const getPopularSubreddits = r =>
   r.getPopularSubreddits({ limit: 5 }).then(subreddits => ({ subreddits }));
 
-const getTopPosts = () => {
+const getTopPosts = r => {
   const mergeRightToLeft = (post, comments) => ({ ...post, comments });
 
   return r.getTop("all", { time: "day", limit: 3 }).then(postData => {
@@ -68,7 +63,15 @@ const updateDynamo = callback => ([topPosts, trendingSubreddits]) => {
 };
 
 exports.handler = (event, context, callback) => {
-  Promise.all([getTopPosts(), getPopularSubreddits()])
+  const r = new snoowrap({
+    userAgent: "firefoxchromesafariie",
+    clientId: process.env.REDDIT_CLIENT_ID,
+    username: process.env.REDDIT_USERNAME,
+    clientSecret: process.env.REDDIT_CLIENT_SECRET,
+    password: process.env.REDDIT_PASSWORD
+  });
+
+  Promise.all([getTopPosts(r), getPopularSubreddits(r)])
     .then(updateDynamo(callback))
     .catch(err => {
       console.error("Error in fetching reddit data " + err);
