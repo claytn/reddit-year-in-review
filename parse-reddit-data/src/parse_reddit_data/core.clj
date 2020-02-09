@@ -1,30 +1,22 @@
 (ns parse-reddit-data.core
-  (:require [environ.core :refer [env]])
-  (:use [amazonica.aws.dynamodbv2])
+  (:require [environ.core :refer [env]]
+    [amazonica.aws.s3 :as s3]
+    [amazonica.aws.dynamodbv2 :as dynamo])
   (:gen-class))
 
-(def cred {
-    :access-key (env :access-key)
-    :secret-key (env :secret-key)
-    :endpoint "us-east-2"
-  })
 
-(def scheduled-times [
-  "00:00"
-  "04:00"
-  "08:00"
-  "12:00"
-  "16:00"
-  "20:00"])
+(comment 
+    (def cred {
+        :access-key (env :access-key)
+        :secret-key (env :secret-key)
+        :endpoint "us-east-2"
+      })
 
-(defn get-dynamo-entry [day-string]
-  (fn [time-string] 
-    (get-item cred
-      :table-name "RedditYearInReview"
-      :key {:Date {:s date-string }})))
 
-(defn get-day-entries [day]
-  (map (get-dynamo-entry day) scheduled-times))
+    (defn get-reddit-day [day]
+      (-> (s3/list-objects-v2 {:bucket-name "reddit-year-in-review" :prefix day})
+          
+        )))
 
 (defn -main
   "I don't do a whole lot ... yet."

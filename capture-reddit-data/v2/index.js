@@ -4,7 +4,7 @@ require("dotenv").config();
 const R = require("ramda");
 const aws = require("aws-sdk");
 const snoowrap = require("snoowrap");
-const { format } = require("date-fns");
+const { format, sub } = require("date-fns");
 
 aws.config.update({
   region: "us-east-2",
@@ -39,24 +39,32 @@ const getTopPosts = r => {
 const s3 = new aws.S3();
 
 const putRedditData = (type, content) => {
-  const time = new Date(Date.now());
+  const gmtTime = new Date(Date.now());
+  const estTime = sub(gmtTime, { hours: 5 });
+
   return new Promise((resolve, reject) => {
-    s3.putObject({
-      Bucket: "reddit-year-in-review",
-      Key: `${format(time, "yyyy-MM-d")}/${type}/${format(time, "yyyy-MM-d:k")}.json`,
-      Body: JSON.stringify(content),
-      ContentType: "application/json"
-    }, (err, data) => {
-      if (err) {
-        console.error(`Error uploading ${type} to s3: ${err}`);
-        reject(err);
-      } else {
-        console.log(`Success uploading ${type} to s3`);
-        resolve(data);
+    s3.putObject(
+      {
+        Bucket: "reddit-year-in-review",
+        Key: `${format(estTime, "yyyy-MM-dd")}/${type}/${format(
+          estTime,
+          "yyyy-MM-dd:k"
+        )}.json`,
+        Body: JSON.stringify(content),
+        ContentType: "application/json"
+      },
+      (err, data) => {
+        if (err) {
+          console.error(`Error uploading ${type} to s3: ${err}`);
+          reject(err);
+        } else {
+          console.log(`Success uploading ${type} to s3`);
+          resolve(data);
+        }
       }
-    })
-  })
-}
+    );
+  });
+};
 
 exports.handler = (event, context, callback) => {
   const r = new snoowrap({
@@ -68,11 +76,11 @@ exports.handler = (event, context, callback) => {
   });
 
   Promise.all([getTopPosts(r), getPopularSubreddits(r)])
-    .then(([topPosts, trendingSubreddits]) => { 
+    .then(([topPosts, trendingSubreddits]) => {
       return Promise.all([
-        putRedditData('TopPosts', topPosts),
-        putRedditData('TrendingSubreddits', trendingSubreddits) 
-      ])
+        putRedditData("TopPosts", topPosts),
+        putRedditData("TrendingSubreddits", trendingSubreddits)
+      ]);
     })
     .catch(err => {
       console.error("Error in fetching and uploading reddit data " + err);
