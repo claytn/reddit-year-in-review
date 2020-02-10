@@ -88,15 +88,15 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./components/Layout.js":
-/*!******************************!*\
-  !*** ./components/Layout.js ***!
-  \******************************/
+/***/ "./components/QuickSearch/index.js":
+/*!*****************************************!*\
+  !*** ./components/QuickSearch/index.js ***!
+  \*****************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -104,58 +104,173 @@ module.exports =
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./common */ "./components/common/index.js");
-var _jsxFileName = "/Users/cmarshall/Development/RedditYearInReview/reddit-year-in-review-ui/components/Layout.js";
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common */ "./components/common/index.js");
+var _jsxFileName = "/Users/cmarshall/Development/RedditYearInReview/reddit-year-in-review-ui/components/QuickSearch/index.js";
 
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
+const QuickSearch = () => __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Flex"], {
+  m: 2,
+  width: [0.5],
+  height: "100px",
+  color: "text",
+  bg: "bg",
+  border: "1px solid",
+  borderColor: "secondary",
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 4
+  },
+  __self: undefined
+}, "quick jump box / calendar view");
+
+/* harmony default export */ __webpack_exports__["default"] = (QuickSearch);
+
+/***/ }),
+
+/***/ "./components/TopPosts/index.js":
+/*!**************************************!*\
+  !*** ./components/TopPosts/index.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common */ "./components/common/index.js");
+var _jsxFileName = "/Users/cmarshall/Development/RedditYearInReview/reddit-year-in-review-ui/components/TopPosts/index.js";
+
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+
+const TopPosts = () => __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Flex"], {
+  m: 2,
+  width: [1],
+  height: "100px",
+  color: "text",
+  bg: "bg",
+  border: "1px solid",
+  borderColor: "secondary",
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 4
+  },
+  __self: undefined
+}, "main content section");
+
+/* harmony default export */ __webpack_exports__["default"] = (TopPosts);
+
+/***/ }),
+
+/***/ "./components/TrendingSubreddits/index.js":
+/*!************************************************!*\
+  !*** ./components/TrendingSubreddits/index.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common */ "./components/common/index.js");
+var _jsxFileName = "/Users/cmarshall/Development/RedditYearInReview/reddit-year-in-review-ui/components/TrendingSubreddits/index.js";
+
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+
+const TrendingSubreddits = () => __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Flex"], {
+  m: 2,
+  width: [0.5],
+  height: "100px",
+  color: "text",
+  bg: "bg",
+  border: "1px solid",
+  borderColor: "secondary",
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 4
+  },
+  __self: undefined
+}, "trending subreddits");
+
+/* harmony default export */ __webpack_exports__["default"] = (TrendingSubreddits);
+
+/***/ }),
+
+/***/ "./components/common/Layout.js":
+/*!*************************************!*\
+  !*** ./components/common/Layout.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_switch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-switch */ "react-switch");
+/* harmony import */ var react_switch__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_switch__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! . */ "./components/common/index.js");
+/* harmony import */ var _contexts__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../contexts */ "./contexts.js");
+var _jsxFileName = "/Users/cmarshall/Development/RedditYearInReview/reddit-year-in-review-ui/components/common/Layout.js";
+
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+
+
+
+
 const NavBar = () => {
-  return __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Flex"], {
-    height: "30px",
+  return __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
+    height: 40,
+    p: 2,
     flexDirection: "row",
     justifyContent: "space-between",
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 5
-    },
-    __self: undefined
-  }, __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Text"], {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 6
-    },
-    __self: undefined
-  }, "a year in review for reddit (not afiliated with reddit)"), __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Flex"], {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 7
-    },
-    __self: undefined
-  }, __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-    href: "about",
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 8
-    },
-    __self: undefined
-  }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
       lineNumber: 9
     },
     __self: undefined
-  }, __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Text"], {
+  }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Text"], {
     __source: {
       fileName: _jsxFileName,
       lineNumber: 10
     },
     __self: undefined
-  }, "About"))), __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Link"], {
-    href: "/",
+  }, "a year in review for reddit (not afiliated with reddit)"), __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 11
+    },
+    __self: undefined
+  }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Link"], {
+    href: "about",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 12
+    },
+    __self: undefined
+  }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
       lineNumber: 13
+    },
+    __self: undefined
+  }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Text"], {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 14
+    },
+    __self: undefined
+  }, "About"))), __jsx(___WEBPACK_IMPORTED_MODULE_2__["Link"], {
+    href: "/",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 17
     },
     __self: undefined
   }, __jsx("a", {
@@ -164,13 +279,13 @@ const NavBar = () => {
     },
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 14
+      lineNumber: 18
     },
     __self: undefined
-  }, __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Text"], {
+  }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Text"], {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 15
+      lineNumber: 19
     },
     __self: undefined
   }, "Donate")))));
@@ -194,21 +309,62 @@ const Layout = ({
   }, []); 
   (width > breakpoint ? renderDesktop() : renderMobile())
   */
-  return __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Box"], {
+  const {
+    0: darkTheme,
+    1: toggleTheme
+  } = Object(react__WEBPACK_IMPORTED_MODULE_0__["useContext"])(_contexts__WEBPACK_IMPORTED_MODULE_3__["ThemeContext"]);
+  return __jsx(___WEBPACK_IMPORTED_MODULE_2__["Box"], {
     height: "100vh",
     bg: "bg",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 39
+      lineNumber: 44
     },
     __self: undefined
   }, __jsx(NavBar, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 40
+      lineNumber: 45
     },
     __self: undefined
-  }), children);
+  }), __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    px: 4,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 46
+    },
+    __self: undefined
+  }, __jsx(react_switch__WEBPACK_IMPORTED_MODULE_1___default.a, {
+    onChange: toggleTheme,
+    checked: darkTheme,
+    height: 24,
+    width: 48,
+    checkedIcon: __jsx("div", {
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 52
+      },
+      __self: undefined
+    }),
+    uncheckedIcon: __jsx("div", {
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 53
+      },
+      __self: undefined
+    }),
+    offColor: "#d9dfe2",
+    offHandleColor: "#fff",
+    onColor: "#999",
+    onHandleColor: "#282c35",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 47
+    },
+    __self: undefined
+  })), children);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Layout);
@@ -253,6 +409,23 @@ const Link = styled_components__WEBPACK_IMPORTED_MODULE_0___default()(next_link_
   displayName: "common__Link",
   componentId: "sc-1tadx98-3"
 })(["", " ", ""], styled_system__WEBPACK_IMPORTED_MODULE_1__["space"], styled_system__WEBPACK_IMPORTED_MODULE_1__["layout"]);
+
+/***/ }),
+
+/***/ "./contexts.js":
+/*!*********************!*\
+  !*** ./contexts.js ***!
+  \*********************/
+/*! exports provided: ThemeContext */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThemeContext", function() { return ThemeContext; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+const ThemeContext = react__WEBPACK_IMPORTED_MODULE_0___default.a.createContext();
 
 /***/ }),
 
@@ -2194,10 +2367,11 @@ if (false) {} else {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! styled-components */ "styled-components");
-/* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _components_Layout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Layout */ "./components/Layout.js");
-/* harmony import */ var _components_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/common */ "./components/common/index.js");
+/* harmony import */ var _components_common_Layout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/common/Layout */ "./components/common/Layout.js");
+/* harmony import */ var _components_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/common */ "./components/common/index.js");
+/* harmony import */ var _components_QuickSearch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/QuickSearch */ "./components/QuickSearch/index.js");
+/* harmony import */ var _components_TopPosts__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/TopPosts */ "./components/TopPosts/index.js");
+/* harmony import */ var _components_TrendingSubreddits__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/TrendingSubreddits */ "./components/TrendingSubreddits/index.js");
 var _jsxFileName = "/Users/cmarshall/Development/RedditYearInReview/reddit-year-in-review-ui/pages/index.js";
 
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
@@ -2205,67 +2379,48 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 
+
+
 const Index = () => {
-  return __jsx(_components_Layout__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 8
-    },
-    __self: undefined
-  }, __jsx(_components_common__WEBPACK_IMPORTED_MODULE_3__["Flex"], {
-    flexDirection: "row",
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 9
-    },
-    __self: undefined
-  }, __jsx(_components_common__WEBPACK_IMPORTED_MODULE_3__["Flex"], {
-    m: 2,
-    width: [0.5],
-    height: "100px",
-    color: "text",
-    bg: "bg",
-    border: "1px solid",
-    borderColor: "secondary",
+  return __jsx(_components_common_Layout__WEBPACK_IMPORTED_MODULE_1__["default"], {
     __source: {
       fileName: _jsxFileName,
       lineNumber: 10
     },
     __self: undefined
-  }, "quick jump box / calendar view"), __jsx(_components_common__WEBPACK_IMPORTED_MODULE_3__["Flex"], {
-    m: 2,
-    width: [1],
-    height: "100px",
-    color: "text",
-    bg: "bg",
-    border: "1px solid",
-    borderColor: "secondary",
+  }, __jsx(_components_common__WEBPACK_IMPORTED_MODULE_2__["Flex"], {
+    flexDirection: "row",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 21
+      lineNumber: 11
     },
     __self: undefined
-  }, "main content section"), __jsx(_components_common__WEBPACK_IMPORTED_MODULE_3__["Flex"], {
-    m: 2,
-    width: [0.5],
-    height: "100px",
-    color: "text",
-    bg: "bg",
-    border: "1px solid",
-    borderColor: "secondary",
+  }, __jsx(_components_QuickSearch__WEBPACK_IMPORTED_MODULE_3__["default"], {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 32
+      lineNumber: 12
     },
     __self: undefined
-  }, "trending subreddits")));
+  }), __jsx(_components_TopPosts__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 13
+    },
+    __self: undefined
+  }), __jsx(_components_TrendingSubreddits__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 14
+    },
+    __self: undefined
+  })));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Index);
 
 /***/ }),
 
-/***/ 4:
+/***/ 3:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/
@@ -2362,6 +2517,17 @@ module.exports = require("prop-types-exact");
 /***/ (function(module, exports) {
 
 module.exports = require("react");
+
+/***/ }),
+
+/***/ "react-switch":
+/*!*******************************!*\
+  !*** external "react-switch" ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("react-switch");
 
 /***/ }),
 

@@ -1,5 +1,5 @@
 node_modules/
 *.zip
 *.env
-.idea
-.next
+.idea/
+.next/

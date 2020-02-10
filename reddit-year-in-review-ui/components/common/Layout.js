@@ -1,8 +1,12 @@
-import { Box, Flex, Text, Link } from "./common";
+import { useContext } from "react";
+import Switch from "react-switch";
+
+import { Box, Flex, Text, Link } from ".";
+import { ThemeContext } from "../../contexts";
 
 const NavBar = () => {
   return (
-    <Flex height={"30px"} flexDirection="row" justifyContent="space-between">
+    <Flex height={40} p={2} flexDirection="row" justifyContent="space-between">
       <Text>a year in review for reddit (not afiliated with reddit)</Text>
       <Flex>
         <Link href="about">
@@ -35,9 +39,25 @@ const Layout = ({ breakpoint, renderMobile, renderDesktop, children }) => {
   (width > breakpoint ? renderDesktop() : renderMobile())
   */
 
+  const [alternateThemeOn, toggleTheme] = useContext(ThemeContext);
+
   return (
     <Box height="100vh" bg="bg">
       <NavBar />
+      <Flex flexDirection="row" justifyContent="flex-end" px={4}>
+        <Switch
+          onChange={toggleTheme}
+          checked={alternateThemeOn}
+          height={24}
+          width={48}
+          checkedIcon={<div></div>}
+          uncheckedIcon={<div></div>}
+          offColor={"#d9dfe2"}
+          offHandleColor={"#fff"}
+          onColor={"#999"}
+          onHandleColor={"#282c35"}
+        />
+      </Flex>
       {children}
     </Box>
   );

@@ -93,56 +93,20 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
-/***/ "./hooks/index.js":
-/*!************************!*\
-  !*** ./hooks/index.js ***!
-  \************************/
-/*! exports provided: useThemeToggle */
+/***/ "./contexts.js":
+/*!*********************!*\
+  !*** ./contexts.js ***!
+  \*********************/
+/*! exports provided: ThemeContext */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _useThemeToggle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./useThemeToggle */ "./hooks/useThemeToggle.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "useThemeToggle", function() { return _useThemeToggle__WEBPACK_IMPORTED_MODULE_0__["default"]; });
-
-
-
-
-/***/ }),
-
-/***/ "./hooks/useThemeToggle.js":
-/*!*********************************!*\
-  !*** ./hooks/useThemeToggle.js ***!
-  \*********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThemeContext", function() { return ThemeContext; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../theme */ "./theme.js");
 
-
-
-const useThemeToggle = (defaultTheme = "light") => {
-  const {
-    0: theme,
-    1: setTheme
-  } = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(defaultTheme);
-
-  const toggleTheme = () => {
-    if (theme === "light") {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-  };
-
-  return [theme === "light" ? _theme__WEBPACK_IMPORTED_MODULE_1__["lightTheme"] : _theme__WEBPACK_IMPORTED_MODULE_1__["darkTheme"], toggleTheme];
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (useThemeToggle);
+const ThemeContext = react__WEBPACK_IMPORTED_MODULE_0___default.a.createContext();
 
 /***/ }),
 
@@ -159,9 +123,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! styled-components */ "styled-components");
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(styled_components__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _hooks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../hooks */ "./hooks/index.js");
+/* harmony import */ var _contexts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../contexts */ "./contexts.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../theme */ "./theme.js");
 var _jsxFileName = "/Users/cmarshall/Development/RedditYearInReview/reddit-year-in-review-ui/pages/_app.js";
-
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -173,34 +137,50 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 
 
 
+
+const DARK_THEME = "dark";
+const LIGHT_THEME = "light";
+
 const App = (_ref) => {
   let {
     Component
   } = _ref,
       props = _objectWithoutProperties(_ref, ["Component"]);
 
-  const [theme, toggleTheme] = Object(_hooks__WEBPACK_IMPORTED_MODULE_2__["useThemeToggle"])();
+  const {
+    0: theme,
+    1: setTheme
+  } = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(LIGHT_THEME);
+
+  const toggleTheme = () => {
+    if (theme === LIGHT_THEME) {
+      setTheme(DARK_THEME);
+    } else {
+      setTheme(LIGHT_THEME);
+    }
+  };
+
   return __jsx(styled_components__WEBPACK_IMPORTED_MODULE_1__["ThemeProvider"], {
-    theme: theme,
+    theme: theme === LIGHT_THEME ? _theme__WEBPACK_IMPORTED_MODULE_3__["lightTheme"] : _theme__WEBPACK_IMPORTED_MODULE_3__["darkTheme"],
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 8
+      lineNumber: 21
     },
     __self: undefined
-  }, __jsx("button", {
-    onClick: toggleTheme,
+  }, __jsx(_contexts__WEBPACK_IMPORTED_MODULE_2__["ThemeContext"].Provider, {
+    value: [theme === DARK_THEME, toggleTheme],
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 9
+      lineNumber: 24
     },
     __self: undefined
-  }, "theme me"), __jsx(Component, _extends({}, props, {
+  }, __jsx(Component, _extends({}, props, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 10
+      lineNumber: 25
     },
     __self: undefined
-  })));
+  }))));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (App);
