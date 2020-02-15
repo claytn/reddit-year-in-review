@@ -66,7 +66,7 @@
     ))
 
 
-(defn migrateToS3 []
+(defn migrateDynamoToS3 []
   (let [from (t/date-time 2020 02 1)
         to (t/date-time 2020 02 9)]
     (for [date (dates-to-query from to)]

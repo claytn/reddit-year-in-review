@@ -4,13 +4,16 @@ const QuickSearch = () => (
   <Flex
     m={2}
     width={[0.5]}
-    height={"100px"}
     color="text"
     bg="bg"
     border="1px solid"
     borderColor="secondary"
+    justifyContent="center"
+    alignItems="center"
+    flexDirection="column"
   >
-    quick jump box / calendar view
+    <input type="date" />
+    <button>Quick Search</button>
   </Flex>
 );
 

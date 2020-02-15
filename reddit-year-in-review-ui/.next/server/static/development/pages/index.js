@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -113,17 +113,32 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 const QuickSearch = () => __jsx(_common__WEBPACK_IMPORTED_MODULE_1__["Flex"], {
   m: 2,
   width: [0.5],
-  height: "100px",
   color: "text",
   bg: "bg",
   border: "1px solid",
   borderColor: "secondary",
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "column",
   __source: {
     fileName: _jsxFileName,
     lineNumber: 4
   },
   __self: undefined
-}, "quick jump box / calendar view");
+}, __jsx("input", {
+  type: "date",
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 15
+  },
+  __self: undefined
+}), __jsx("button", {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 16
+  },
+  __self: undefined
+}, "Quick Search"));
 
 /* harmony default export */ __webpack_exports__["default"] = (QuickSearch);
 
@@ -226,8 +241,9 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 const NavBar = () => {
   return __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
-    height: 40,
+    height: 35,
     p: 2,
+    borderBottom: "1px solid",
     flexDirection: "row",
     justifyContent: "space-between",
     __source: {
@@ -238,39 +254,52 @@ const NavBar = () => {
   }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Text"], {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 10
+      lineNumber: 16
     },
     __self: undefined
-  }, "a year in review for reddit (not afiliated with reddit)"), __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
+  }, "a year in review for reddit (not afiliated with reddit)"), __jsx("input", {
+    placeholder: "Search",
+    style: {
+      display: "flex",
+      flex: 1,
+      marginLeft: 15,
+      marginRight: 35
+    },
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 11
+      lineNumber: 17
+    },
+    __self: undefined
+  }), __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 21
     },
     __self: undefined
   }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Link"], {
     href: "about",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 12
+      lineNumber: 22
     },
     __self: undefined
   }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 13
+      lineNumber: 23
     },
     __self: undefined
   }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Text"], {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 14
+      lineNumber: 24
     },
     __self: undefined
   }, "About"))), __jsx(___WEBPACK_IMPORTED_MODULE_2__["Link"], {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 17
+      lineNumber: 27
     },
     __self: undefined
   }, __jsx("a", {
@@ -279,16 +308,75 @@ const NavBar = () => {
     },
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 18
+      lineNumber: 28
     },
     __self: undefined
   }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Text"], {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 19
+      lineNumber: 29
     },
     __self: undefined
   }, "Donate")))));
+};
+
+const FilterOptoinsBar = () => {
+  const {
+    0: alternateThemeOn,
+    1: toggleTheme
+  } = Object(react__WEBPACK_IMPORTED_MODULE_0__["useContext"])(_contexts__WEBPACK_IMPORTED_MODULE_3__["ThemeContext"]);
+  return __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    px: 4,
+    py: 1,
+    borderBottom: "1px solid",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 40
+    },
+    __self: undefined
+  }, __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 47
+    },
+    __self: undefined
+  }, "Filter: ", __jsx("input", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 48
+    },
+    __self: undefined
+  })), __jsx(react_switch__WEBPACK_IMPORTED_MODULE_1___default.a, {
+    onChange: toggleTheme,
+    checked: alternateThemeOn,
+    height: 24,
+    width: 48,
+    checkedIcon: __jsx("div", {
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 56
+      },
+      __self: undefined
+    }),
+    uncheckedIcon: __jsx("div", {
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 57
+      },
+      __self: undefined
+    }),
+    offColor: "#d9dfe2",
+    offHandleColor: "#fff",
+    onColor: "#999",
+    onHandleColor: "#282c35",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 51
+    },
+    __self: undefined
+  }));
 };
 
 const Layout = ({
@@ -309,62 +397,27 @@ const Layout = ({
   }, []); 
   (width > breakpoint ? renderDesktop() : renderMobile())
   */
-  const {
-    0: darkTheme,
-    1: toggleTheme
-  } = Object(react__WEBPACK_IMPORTED_MODULE_0__["useContext"])(_contexts__WEBPACK_IMPORTED_MODULE_3__["ThemeContext"]);
   return __jsx(___WEBPACK_IMPORTED_MODULE_2__["Box"], {
     height: "100vh",
     bg: "bg",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 44
+      lineNumber: 83
     },
     __self: undefined
   }, __jsx(NavBar, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 45
+      lineNumber: 84
     },
     __self: undefined
-  }), __jsx(___WEBPACK_IMPORTED_MODULE_2__["Flex"], {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    px: 4,
+  }), __jsx(FilterOptoinsBar, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 46
+      lineNumber: 85
     },
     __self: undefined
-  }, __jsx(react_switch__WEBPACK_IMPORTED_MODULE_1___default.a, {
-    onChange: toggleTheme,
-    checked: darkTheme,
-    height: 24,
-    width: 48,
-    checkedIcon: __jsx("div", {
-      __source: {
-        fileName: _jsxFileName,
-        lineNumber: 52
-      },
-      __self: undefined
-    }),
-    uncheckedIcon: __jsx("div", {
-      __source: {
-        fileName: _jsxFileName,
-        lineNumber: 53
-      },
-      __self: undefined
-    }),
-    offColor: "#d9dfe2",
-    offHandleColor: "#fff",
-    onColor: "#999",
-    onHandleColor: "#282c35",
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 47
-    },
-    __self: undefined
-  })), children);
+  }), children);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Layout);
@@ -2420,7 +2473,7 @@ const Index = () => {
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/

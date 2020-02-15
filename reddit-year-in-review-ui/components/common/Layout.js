@@ -6,8 +6,18 @@ import { ThemeContext } from "../../contexts";
 
 const NavBar = () => {
   return (
-    <Flex height={40} p={2} flexDirection="row" justifyContent="space-between">
+    <Flex
+      height={35}
+      p={2}
+      borderBottom="1px solid"
+      flexDirection="row"
+      justifyContent="space-between"
+    >
       <Text>a year in review for reddit (not afiliated with reddit)</Text>
+      <input
+        placeholder="Search"
+        style={{ display: "flex", flex: 1, marginLeft: 15, marginRight: 35 }}
+      />
       <Flex>
         <Link href="about">
           <a>
@@ -20,6 +30,36 @@ const NavBar = () => {
           </a>
         </Link>
       </Flex>
+    </Flex>
+  );
+};
+
+const FilterOptoinsBar = () => {
+  const [alternateThemeOn, toggleTheme] = useContext(ThemeContext);
+  return (
+    <Flex
+      flexDirection="row"
+      justifyContent="space-between"
+      px={4}
+      py={1}
+      borderBottom={"1px solid"}
+    >
+      <Flex>
+        Filter: <input />
+      </Flex>
+
+      <Switch
+        onChange={toggleTheme}
+        checked={alternateThemeOn}
+        height={24}
+        width={48}
+        checkedIcon={<div></div>}
+        uncheckedIcon={<div></div>}
+        offColor={"#d9dfe2"}
+        offHandleColor={"#fff"}
+        onColor={"#999"}
+        onHandleColor={"#282c35"}
+      />
     </Flex>
   );
 };
@@ -39,25 +79,10 @@ const Layout = ({ breakpoint, renderMobile, renderDesktop, children }) => {
   (width > breakpoint ? renderDesktop() : renderMobile())
   */
 
-  const [alternateThemeOn, toggleTheme] = useContext(ThemeContext);
-
   return (
     <Box height="100vh" bg="bg">
       <NavBar />
-      <Flex flexDirection="row" justifyContent="flex-end" px={4}>
-        <Switch
-          onChange={toggleTheme}
-          checked={alternateThemeOn}
-          height={24}
-          width={48}
-          checkedIcon={<div></div>}
-          uncheckedIcon={<div></div>}
-          offColor={"#d9dfe2"}
-          offHandleColor={"#fff"}
-          onColor={"#999"}
-          onHandleColor={"#282c35"}
-        />
-      </Flex>
+      <FilterOptoinsBar />
       {children}
     </Box>
   );
