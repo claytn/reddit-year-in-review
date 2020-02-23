@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: com.amazonaws/aws-java-sdk-ioteventsdata:1.11.698">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/amazonaws/aws-java-sdk-ioteventsdata/1.11.698/aws-java-sdk-ioteventsdata-1.11.698.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
