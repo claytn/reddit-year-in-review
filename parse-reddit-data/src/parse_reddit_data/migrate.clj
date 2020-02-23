@@ -4,8 +4,9 @@
     [clj-time.core :as t]
     [clj-time.format :as f]
     [clojure.data.json :as json]
-    [environ.core :refer [env]])
-  (:import [java.io File]))
+    [environ.core :refer [env]]
+    [parse-reddit-data.utils :as utils])
+  (:import java.io.ByteArrayInputStream))
 
 (def cred {
     :access-key (env :access-key)
@@ -21,20 +22,12 @@
   "16:00"
   "20:00"])
 
-(defn create-range-iter [from to dates]
-  (if (t/equal? from to)
-    (cons to dates)
-    (create-range-iter (t/plus from (t/days 1)) to (cons from dates))))
-
-(defn create-date-range [from to]
-  (create-range-iter from to '()))
-
 (defn create-time-interval-dates [date]
   (let [YYYY-MM-DD (f/unparse (f/formatters :year-month-day) date)]
     (map #(str YYYY-MM-DD " " %) scheduled-times)))
 
 (defn dates-to-query [from to]
-  (->> (create-date-range from to)
+  (->> (utils/date-range from to)
        (map create-time-interval-dates)
        flatten))
 
@@ -43,33 +36,32 @@
     :table-name "RedditYearInReview"
     :key {:Date {:s date-string }}))
 
-(def topPostsFile (java.io.File. "topPosts.json"))
-(def trendingSubredditsFile (java.io.File. "trendingSubreddits.json"))
-
 (defn write-item-to-s3 [item dynamo-date-string]
-  (spit topPostsFile (item :TopPosts))
-  (spit trendingSubredditsFile (item :TrendingSubreddits))
   (let [dynamo-date-format (f/formatter "yyyy-MM-dd H:m")
         s3-date-format (f/formatter "yyyy-MM-dd:H")
         gmt-date-hour-min (f/parse dynamo-date-format dynamo-date-string)
         est-date-hour-min (t/minus gmt-date-hour-min (t/hours 5))
         date-string (f/unparse (f/formatters :year-month-day) est-date-hour-min) ;; yyyy-MM-dd
-        date-string-hour (f/unparse s3-date-format est-date-hour-min)]
+        date-string-hour (f/unparse s3-date-format est-date-hour-min)
+        top-posts-as-bytes (.getBytes (item :TopPosts) "UTF-8")
+        trending-subreddits-as-bytes (.getBytes (item :TrendingSubreddits) "UTF-8")]
     (s3/put-object cred
-                  :bucket-name "reddit-year-in-review"
-                  :key (str date-string "/TopPosts/" date-string-hour ".json")
-                  :file topPostsFile)
+                   :bucket-name "reddit-year-in-review"
+                   :key (str date-string "/TopPosts/" date-string-hour ".json")
+                   :input-stream (ByteArrayInputStream. top-posts-as-bytes)
+                   :metadata {:content-length (count top-posts-as-bytes)
+                              :content-type "application/json"})
     (s3/put-object cred
                    :bucket-name "reddit-year-in-review"
                    :key (str date-string "/TrendingSubreddits/" date-string-hour ".json")
-                   :file trendingSubredditsFile)
-    ))
+                   :input-stream (ByteArrayInputStream. trending-subreddits-as-bytes)
+                   :metadata {:content-length (count trending-subreddits-as-bytes)
+                              :content-type "application/json"})))
 
 
-(defn migrateDynamoToS3 []
-  (let [from (t/date-time 2020 02 1)
-        to (t/date-time 2020 02 9)]
+(defn migrateDynamoToS3 [from-date to-date]
+  (let [from (utils/parse-date from-date)
+        to (utils/parse-date to-date)]
     (for [date (dates-to-query from to)]
-      (let [item (get-dynamo-entry date)]
-        (write-item-to-s3 (item :item) date)))
-    ))
+      (let [item-wrapper (get-dynamo-entry date)]
+        (write-item-to-s3 (:item item-wrapper) date)))))
