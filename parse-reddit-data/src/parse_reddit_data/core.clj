@@ -1,10 +1,17 @@
 (ns parse-reddit-data.core
   (:require
+    [amazonica.aws.dynamodbv2 :as dynamo]
     [amazonica.aws.s3 :as s3]
     [clojure.data.json :as json]
+    [clj-time.core :as t]
+    [clj-time.predicates :as pr]
     [environ.core :refer [env]]
     [parse-reddit-data.utils :as utils])
+  (:use [parse-reddit-data.constants])
   (:gen-class))
+
+(def YEAR 2020)
+
 
 (def cred {
      :access-key (env :access-key)
@@ -45,46 +52,96 @@
   (let [sorted-posts (sort-by #(get % "ups") > reddit-posts)]
     (first-n-unique-elements n (complement post-exists) sorted-posts)))
 
-(defn write-to-s3-aggregated-data [category date-string json-string]
-  (let [json-as-bytes (.getBytes json-string "UTF-8")
+(defn write-to-s3 [bucket key data]
+  (let [json-string (json/write-str data)
+        json-as-bytes (.getBytes json-string "UTF-8")
         input-stream (java.io.ByteArrayInputStream. json-as-bytes)]
     (s3/put-object cred
-                   :bucket-name "aggregated-reddit-data"
-                   :key (str category "/" date-string ".json")
+                   :bucket-name bucket
+                   :key key
                    :input-stream input-stream
                    :metadata {:content-length (count json-as-bytes)
                               :content-type "application/json"})))
 
-(defn aggregate-single-day-reddit-posts [date-string]
-  (let [top-posts-keys (get-day-s3-keys date-string "TopPosts")]
-    (->> top-posts-keys
-         parse-s3-object-json
-         (get-top-distinct-posts 3)
-         json/write-str
-         (write-to-s3-aggregated-data "TopPosts" date-string))))
+(defn write-to-dynamo [table item]
+  (dynamo/put-item cred
+                   :table-name table
+                   :item item))
 
 (defn aggregate-single-day-trending-subreddits [date-string]
   ;; all s3 keys are pointing to a file with the same json - only reading from one key to avoid redundancy.
   (let [[trending-subreddit-key & _] (get-day-s3-keys date-string "TrendingSubreddits")]
     (->> [trending-subreddit-key]
-         parse-s3-object-json
-         json/write-str
-         (write-to-s3-aggregated-data "TrendingSubreddits" date-string))))
+         parse-s3-object-json)))
 
-(defn aggregate-single-day-data
-  "Aggregates reddit posts and trending subreddits for a single date-string(YYYY-MM-DD)"
-  [date-string]
-  (aggregate-single-day-reddit-posts date-string)
-  (aggregate-single-day-trending-subreddits date-string))
+(defn filter-awardings [awards]
+  (map #(select-keys % REQUIRED_AWARDING_KEYS) awards))
+
+(defn filter-comments [comments]
+  (letfn [(filter-comment-data [comment]
+            (-> comment
+                (select-keys REQUIRED_COMMENT_KEYS)
+                (update "author" #(get-in % ["author" "name"]))
+                (update "all_awardings" filter-awardings)))]
+    (map filter-comment-data comments)))
+
+(defn filter-post-data [post]
+  (-> post
+      (select-keys REDDIT_POST_KEYS)
+      (update "author" #(get-in % ["author" "name"]))
+      (update "comments" filter-comments)
+      (update "all_awardings" filter-awardings)))
+
+(defn aggregate-single-day-reddit-posts [date-string]
+  (let [top-posts-keys (get-day-s3-keys date-string "TopPosts")
+        top-distinct-posts (->> top-posts-keys
+                                parse-s3-object-json
+                                (get-top-distinct-posts 3)
+                                (map filter-post-data))]
+    {:date date-string
+     :posts top-distinct-posts}))
 
 (defn aggregate-range-of-days-data
-  "Aggregates reddit posts and trending subreddits for a range of dates"
-  [from-date-string to-date-string]
-  (let [from (utils/parse-date from-date-string)
-        to (utils/parse-date to-date-string)
-        dates (utils/date-range from to)
+  "Aggregates reddit posts for a range of dates"
+  [from to]
+  (let [dates (utils/date-range from to)
         date-strings (map utils/unparse-date dates)]
-    (for [date-string date-strings] (aggregate-single-day-data date-string))))
+    (for [date-string date-strings] (aggregate-single-day-reddit-posts date-string))))
+
+(defn aggregate-reddit-data-for-month
+  "Aggregates reddit posts and trending subreddits for a single month"
+  [month]
+  (if (or (< month 1) (> month 12))
+    (throw (Exception. "Invalid month supplied must be 1-12"))
+    (let [first-of-month (t/first-day-of-the-month YEAR month)
+          end-of-month (t/last-day-of-the-month YEAR month)]
+      (aggregate-range-of-days-data first-of-month end-of-month))))
+
+(defn get-posts-preview-data [{:keys [date posts]}]
+  (let [f #(select-keys % REDDIT_POST_PREVIEW_KEYS)
+        previews (map f posts)]
+    {:date date :previews previews}))
+
+(defn get-posts-detail-data [{:keys [posts]}]
+  (let [f #(select-keys % REDDIT_POST_DETAIL_KEYS)]
+    (map f posts)))
+
+(defn generate-month-top-posts [month]
+  (let [month-post-data  (aggregate-reddit-data-for-month month)
+        month-post-previews (pmap get-posts-preview-data month-post-data)
+        month-post-details (pmap get-posts-detail-data month-post-data)]
+    (future
+      (write-to-s3
+        "aggregated-reddit-data"
+        (str "TopPosts/" (format "%02d" month) "-" YEAR)
+        month-post-previews))
+
+    (future
+      (doseq [binding value]
+        ;; TODO: write detail data to dynamo
+        ))
+    ))
+
 
 (def command-line-error-message "Must include either a single date or a range of dates.\nExamples:
   java -jar <jar-file-name>.jar YYYY-MM-DD\n
@@ -95,7 +152,7 @@
   (let [argc (count args)]
     (cond
       (= argc 1) (let [[day] args]
-                    (aggregate-single-day-data day))
+                    (aggregate-single-day-reddit-posts day))
       (= argc 2)  (let [[from to] args]
                     (aggregate-range-of-days-data from to))
       :else (throw (Exception. command-line-error-message)))))

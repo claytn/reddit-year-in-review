@@ -1,3 +1,5 @@
+;; functionality for migrating my original DynamoDB entries over to S3
+;; only used for initial migration and any backups I needed later on
 (ns parse-reddit-data.migrate
   (:require [amazonica.aws.s3 :as s3]
     [amazonica.aws.dynamodbv2 :as dynamo]
