@@ -3,6 +3,7 @@
     [amazonica.aws.dynamodbv2 :as dynamo]
     [amazonica.aws.s3 :as s3]
     [clojure.data.json :as json]
+    [clj-time.format :as f]
     [clj-time.core :as t]
     [clj-time.predicates :as pr]
     [environ.core :refer [env]]
@@ -87,17 +88,24 @@
 
 (defn filter-post-data [post]
   (-> post
-      (select-keys REDDIT_POST_KEYS)
+      (select-keys (vec REDDIT_POST_KEYS))
       (update "author" #(get-in % ["author" "name"]))
       (update "comments" filter-comments)
       (update "all_awardings" filter-awardings)))
+
+(defn add-id [date-string index post]
+  (let [formatter (f/formatter "MMdd")
+        date (utils/parse-date date-string)
+        id (str (f/unparse formatter date) (get post "id") index)]
+    (update post "id" (fn [_] id))))
 
 (defn aggregate-single-day-reddit-posts [date-string]
   (let [top-posts-keys (get-day-s3-keys date-string "TopPosts")
         top-distinct-posts (->> top-posts-keys
                                 parse-s3-object-json
                                 (get-top-distinct-posts 3)
-                                (map filter-post-data))]
+                                (map filter-post-data)
+                                (map-indexed (partial add-id date-string)))]
     {:date date-string
      :posts top-distinct-posts}))
 
@@ -118,32 +126,34 @@
       (aggregate-range-of-days-data first-of-month end-of-month))))
 
 (defn get-posts-preview-data [{:keys [date posts]}]
-  (let [f #(select-keys % REDDIT_POST_PREVIEW_KEYS)
-        previews (map f posts)]
+  (let [get-preview-keys #(select-keys % (vec REDDIT_POST_PREVIEW_KEYS))
+        previews (map get-preview-keys posts)]
     {:date date :previews previews}))
 
 (defn get-posts-detail-data [{:keys [posts]}]
-  (let [f #(select-keys % REDDIT_POST_DETAIL_KEYS)]
-    (map f posts)))
+  (let [get-detail-keys #(select-keys % (vec REDDIT_POST_DETAIL_KEYS))
+        details (map get-detail-keys posts)]
+    details))
 
 (defn generate-month-top-posts [month]
   (let [month-post-data  (aggregate-reddit-data-for-month month)
         month-post-previews (pmap get-posts-preview-data month-post-data)
         month-post-details (pmap get-posts-detail-data month-post-data)]
-    (future
-      (write-to-s3
-        "aggregated-reddit-data"
-        (str "TopPosts/" (format "%02d" month) "-" YEAR)
-        month-post-previews))
 
-    (future
-      (doseq [binding value]
-        ;; TODO: write detail data to dynamo
-        ))
-    ))
+    (write-to-s3
+      "aggregated-reddit-data"
+      (str "TopPosts/" (format "%02d" month) "-" YEAR)
+      month-post-previews)
+
+    (doseq [post-detail (flatten month-post-details)]
+      (let [id (get post-detail "id")
+            filtered-details (dissoc post-detail "id")
+            json-string (json/write-str filtered-details)]
+        (write-to-dynamo "reddit-post-details" {:id id :details json-string})))
+      ))
 
 
-(def command-line-error-message "Must include either a single date or a range of dates.\nExamples:
+(def command-line-error-message "Must include either a single date or a range of da*2tes.\nExamples:
   java -jar <jar-file-name>.jar YYYY-MM-DD\n
   java -jar <jar-file-name>.jar YYYY-MM-DD YYYY-MM-DD")
 
