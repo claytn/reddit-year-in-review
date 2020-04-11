@@ -28,14 +28,14 @@
 
 (def REDDIT_POST_KEYS (set/union REDDIT_POST_PREVIEW_KEYS REDDIT_POST_DETAIL_KEYS))
 
-(def REQUIRED_COMMENT_KEYS ["all_awardings"
+(def REQUIRED_COMMENT_KEYS #{"all_awardings"
                             "author"
                             "body"
                             "body_html"
                             "created"
                             "permalink"
-                            "ups"])
+                            "ups"})
 
-(def REQUIRED_AWARDING_KEYS ["count"
+(def REQUIRED_AWARDING_KEYS #{"count"
                              "icon_url"
-                             "name"])
+                             "name"})

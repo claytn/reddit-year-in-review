@@ -15,6 +15,7 @@ const PostPreview = ({
   postHint,
   isVideo,
   isSelf,
+  selfText,
   /** Below are the only remaining pieces need for the full page post */
   media,
   comments

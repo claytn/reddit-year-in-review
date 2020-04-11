@@ -13,12 +13,22 @@
 
 (def YEAR 2020)
 
-
 (def cred {
      :access-key (env :access-key)
      :secret-key (env :secret-key)
      :endpoint "us-east-2"
    })
+
+(defn write-to-s3 [bucket key data]
+  (let [json-string (json/write-str data)
+        json-as-bytes (.getBytes json-string "UTF-8")
+        input-stream (java.io.ByteArrayInputStream. json-as-bytes)]
+    (s3/put-object cred
+                   :bucket-name bucket
+                   :key key
+                   :input-stream input-stream
+                   :metadata {:content-length (count json-as-bytes)
+                              :content-type "application/json"})))
 
 (defn get-day-s3-keys [date-string category]
   (let [s3-keys-wrapper (s3/list-objects-v2 cred {:bucket-name "reddit-year-in-review" :prefix (str date-string "/" category)})]
@@ -53,35 +63,13 @@
   (let [sorted-posts (sort-by #(get % "ups") > reddit-posts)]
     (first-n-unique-elements n (complement post-exists) sorted-posts)))
 
-(defn write-to-s3 [bucket key data]
-  (let [json-string (json/write-str data)
-        json-as-bytes (.getBytes json-string "UTF-8")
-        input-stream (java.io.ByteArrayInputStream. json-as-bytes)]
-    (s3/put-object cred
-                   :bucket-name bucket
-                   :key key
-                   :input-stream input-stream
-                   :metadata {:content-length (count json-as-bytes)
-                              :content-type "application/json"})))
-
-(defn write-to-dynamo [table item]
-  (dynamo/put-item cred
-                   :table-name table
-                   :item item))
-
-(defn aggregate-single-day-trending-subreddits [date-string]
-  ;; all s3 keys are pointing to a file with the same json - only reading from one key to avoid redundancy.
-  (let [[trending-subreddit-key & _] (get-day-s3-keys date-string "TrendingSubreddits")]
-    (->> [trending-subreddit-key]
-         parse-s3-object-json)))
-
 (defn filter-awardings [awards]
-  (map #(select-keys % REQUIRED_AWARDING_KEYS) awards))
+  (map #(select-keys % (vec REQUIRED_AWARDING_KEYS)) awards))
 
 (defn filter-comments [comments]
   (letfn [(filter-comment-data [comment]
             (-> comment
-                (select-keys REQUIRED_COMMENT_KEYS)
+                (select-keys (vec REQUIRED_COMMENT_KEYS))
                 (update "author" #(get-in % ["author" "name"]))
                 (update "all_awardings" filter-awardings)))]
     (map filter-comment-data comments)))
@@ -93,23 +81,26 @@
       (update "comments" filter-comments)
       (update "all_awardings" filter-awardings)))
 
-(defn add-id [date-string index post]
+(defn assign-post-id [index post date-string]
   (let [formatter (f/formatter "MMdd")
         date (utils/parse-date date-string)
         id (str (f/unparse formatter date) (get post "id") index)]
-    (update post "id" (fn [_] id))))
+    (assoc post "id" id)))
 
-(defn aggregate-single-day-reddit-posts [date-string]
+(defn aggregate-single-day-reddit-posts
+  "Given a date string yyyy-mm-dd, returns the top 3 distinct posts for that day"
+  [date-string]
   (let [top-posts-keys (get-day-s3-keys date-string "TopPosts")
         top-distinct-posts (->> top-posts-keys
                                 parse-s3-object-json
-                                (get-top-distinct-posts 3)
-                                (map filter-post-data)
-                                (map-indexed (partial add-id date-string)))]
+                                (get-top-distinct-posts 3))
+        posts (->> top-distinct-posts
+                   (map filter-post-data)
+                   (map-indexed #(assign-post-id %1 %2 date-string)))]
     {:date date-string
-     :posts top-distinct-posts}))
+     :posts posts}))
 
-(defn aggregate-range-of-days-data
+(defn aggregate-reddit-data-for-days
   "Aggregates reddit posts for a range of dates"
   [from to]
   (let [dates (utils/date-range from to)
@@ -123,7 +114,7 @@
     (throw (Exception. "Invalid month supplied must be 1-12"))
     (let [first-of-month (t/first-day-of-the-month YEAR month)
           end-of-month (t/last-day-of-the-month YEAR month)]
-      (aggregate-range-of-days-data first-of-month end-of-month))))
+      (aggregate-reddit-data-for-days first-of-month end-of-month))))
 
 (defn get-posts-preview-data [{:keys [date posts]}]
   (let [get-preview-keys #(select-keys % (vec REDDIT_POST_PREVIEW_KEYS))
@@ -131,29 +122,36 @@
     {:date date :previews previews}))
 
 (defn get-posts-detail-data [{:keys [posts]}]
-  (let [get-detail-keys #(select-keys % (vec REDDIT_POST_DETAIL_KEYS))
-        details (map get-detail-keys posts)]
-    details))
+  (let [get-detail-keys #(select-keys % (vec REDDIT_POST_DETAIL_KEYS))]
+    (map get-detail-keys posts)))
 
 (defn generate-month-top-posts [month]
   (let [month-post-data  (aggregate-reddit-data-for-month month)
         month-post-previews (pmap get-posts-preview-data month-post-data)
         month-post-details (pmap get-posts-detail-data month-post-data)]
 
+    (println "WRITING PREVIEW DATA TO S3...")
     (write-to-s3
       "aggregated-reddit-data"
       (str "TopPosts/" (format "%02d" month) "-" YEAR)
       month-post-previews)
+    (println "PREVIEW DATA UPLOADS COMPLETE.")
 
-    (doseq [post-detail (flatten month-post-details)]
-      (let [id (get post-detail "id")
-            filtered-details (dissoc post-detail "id")
-            json-string (json/write-str filtered-details)]
-        (write-to-dynamo "reddit-post-details" {:id id :details json-string})))
-      ))
+    (println "WRITING POST DETAIL DATA TO DYNAMODB...")
+    (let [create-put-request (fn [post-detail]
+                              {:put-request
+                                {:item {:id (get post-detail "id")
+                                        :details (json/write-str (dissoc post-detail "id"))}}})
+          requests-batch (map create-put-request (flatten month-post-details))
+          ;; DynamoDB limits batch requests to 25
+          partitioned-batch-requests (partition-all 25 requests-batch)]
+      (doseq [batch partitioned-batch-requests]
+        (dynamo/batch-write-item cred
+                               :request-items {"reddit-post-details" batch})))
+    (println "DETAIL DATA UPLOADS COMPLETE.")))
 
 
-(def command-line-error-message "Must include either a single date or a range of da*2tes.\nExamples:
+(def command-line-error-message "Must include either a single date or a range of dates.\nExamples:
   java -jar <jar-file-name>.jar YYYY-MM-DD\n
   java -jar <jar-file-name>.jar YYYY-MM-DD YYYY-MM-DD")
 
@@ -164,5 +162,5 @@
       (= argc 1) (let [[day] args]
                     (aggregate-single-day-reddit-posts day))
       (= argc 2)  (let [[from to] args]
-                    (aggregate-range-of-days-data from to))
+                    (aggregate-reddit-data-for-days from to))
       :else (throw (Exception. command-line-error-message)))))
