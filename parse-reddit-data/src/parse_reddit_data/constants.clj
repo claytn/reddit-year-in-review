@@ -1,6 +1,8 @@
 (ns parse-reddit-data.constants
   (:require [clojure.set :as set]))
 
+(def YEAR 2020)
+
 (def REDDIT_POST_DETAIL_KEYS #{"id"
                                "comments"
                                "selftext"

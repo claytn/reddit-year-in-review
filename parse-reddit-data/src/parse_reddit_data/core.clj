@@ -10,8 +10,6 @@
   (:use [parse-reddit-data.constants])
   (:gen-class))
 
-(def YEAR 2020)
-
 (def cred {
      :access-key (env :access-key)
      :secret-key (env :secret-key)
@@ -114,7 +112,6 @@
   (let [get-detail-keys #(select-keys % (vec REDDIT_POST_DETAIL_KEYS))]
     (map get-detail-keys posts)))
 
-
 (defn populate-month-aggregate-datastores [month]
   "Given a month (int), aggregates the top reddit posts, and writes to our datastores (S3, DynamoDB)"
   (let [month-post-data  (aggregate-reddit-data-for-month month)
@@ -124,21 +121,21 @@
     ;; Write preview data to S3 store
     (write-to-s3-as-json
       "aggregated-reddit-data"
-      (str "TopPosts/" (format "%02d" month) "-" YEAR)
+      (str "TopPosts/" (format "%02d" month) "-" YEAR) ;; "TopPosts/MM-YYYY"
       month-post-previews)
 
     ;; Write post detail data to DynamoDB
     (let [create-put-request (fn [post-detail]
-                                {:put-request
-                                  {:item {:id (get post-detail "id")
-                                          :details (json/write-str (dissoc post-detail "id"))}}})
+                               {:put-request
+                                {:item {:id (get post-detail "id")
+                                        :details (json/write-str (dissoc post-detail "id"))}}})
           requests (map create-put-request (flatten month-post-details))
           ;; DynamoDB batch-write limits 25 requests
           partitioned-batch-requests (partition-all 25 requests)]
       (doseq [batch partitioned-batch-requests]
-        (dynamo/batch-write-item cred
-                               :request-items {"reddit-post-details" batch})))
-    ))
+        (dynamo/batch-write-item
+          cred
+          :request-items {"reddit-post-details" batch})))))
 
 
 (def command-line-error-message "Must include a valid month (1-12).\nExamples:
