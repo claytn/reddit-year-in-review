@@ -1,13 +1,13 @@
-;; functionality for migrating my original DynamoDB entries over to S3
+;; Functionality for migrating my original DynamoDB entries over to S3
 ;; only used for initial migration and any backups I needed later on
 (ns parse-reddit-data.migrate
   (:require [amazonica.aws.s3 :as s3]
-    [amazonica.aws.dynamodbv2 :as dynamo]
-    [clj-time.core :as t]
-    [clj-time.format :as f]
-    [clojure.data.json :as json]
-    [environ.core :refer [env]]
-    [parse-reddit-data.utils :as utils])
+            [amazonica.aws.dynamodbv2 :as dynamo]
+            [clj-time.core :as t]
+            [clj-time.format :as f]
+            [clojure.data.json :as json]
+            [environ.core :refer [env]]
+            [parse-reddit-data.utils.dates :as d])
   (:import java.io.ByteArrayInputStream))
 
 (def cred {
@@ -29,7 +29,7 @@
     (map #(str YYYY-MM-DD " " %) scheduled-times)))
 
 (defn dates-to-query [from to]
-  (->> (utils/date-range from to)
+  (->> (d/date-range from to)
        (map create-time-interval-dates)
        flatten))
 
@@ -62,8 +62,8 @@
 
 
 (defn migrateDynamoToS3 [from-date to-date]
-  (let [from (utils/parse-date from-date)
-        to (utils/parse-date to-date)]
+  (let [from (d/parse-date from-date)
+        to (d/parse-date to-date)]
     (for [date (dates-to-query from to)]
       (let [item-wrapper (get-dynamo-entry date)]
         (write-item-to-s3 (:item item-wrapper) date)))))

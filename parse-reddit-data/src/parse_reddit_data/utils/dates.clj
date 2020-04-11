@@ -1,4 +1,4 @@
-(ns parse-reddit-data.utils
+(ns parse-reddit-data.utils.dates
   (:require [clj-time.format :as f]
             [clj-time.core :as t]))
 
