@@ -63,7 +63,7 @@
 (defn filter-post-data [post]
   (-> post
       (select-keys (vec REDDIT_POST_KEYS))
-      (update "author" #(get-in % ["author" "name"]))
+      (update "author" #(get % "name"))
       (update "comments" filter-comments)
       (update "all_awardings" filter-awardings)))
 

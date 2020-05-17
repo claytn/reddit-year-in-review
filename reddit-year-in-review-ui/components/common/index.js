@@ -5,7 +5,7 @@ import {
   color,
   flexbox,
   typography,
-  border
+  border,
 } from "styled-system";
 import NextLink from "next/link";
 
@@ -26,6 +26,12 @@ export const Text = styled(Flex)`
 `;
 
 export const Link = styled(NextLink)`
+  ${space}
+  ${layout}
+`;
+
+export const Image = styled.img`
+  ${border}
   ${space}
   ${layout}
 `;

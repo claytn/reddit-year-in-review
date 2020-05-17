@@ -1,9 +1,11 @@
+import { Flex, Text, Image } from "../common";
+
 const PostPreview = ({
   id /** self generated */,
   title,
   author,
-  subreddit,
-  date_created /** werid utc time. idk how to parse this. */,
+  subreddit_name_prefixed,
+  created,
   ups,
   thumbnail,
   thumbnailHeight,
@@ -16,22 +18,25 @@ const PostPreview = ({
   isVideo,
   isSelf,
   selfText,
-  /** Below are the only remaining pieces need for the full page post */
-  media,
-  comments
+  num_comments,
 }) => (
   <Flex flexDirection="row">
-    <Flex>
-      <code>^</code>
+    <Flex p={2} width={[1 / 8]}>
       {ups}
     </Flex>
-    <Flex>
+    <Flex p={2} width={[1 / 8]}>
+      <Image src={thumbnail} width="70px" maxHeight="70px" />
+    </Flex>
+    <Flex p={2} width={[7 / 8]} flexDirection="column">
       <Text>{title}</Text>
-      <Flex>
-        <Text>{subreddit}</Text>
+      <Flex flexDirection="row">
         <Text>
-          Posted by {author} {date}
+          Submitted {new Date(created * 1000).toString()} by {author} to{" "}
+          {subreddit_name_prefixed}
         </Text>
+      </Flex>
+      <Flex>
+        <a href="">{`${num_comments} comments`}</a>
       </Flex>
     </Flex>
   </Flex>
