@@ -6,7 +6,7 @@ import QuickSearch from "../components/QuickSearch";
 import TopPosts from "../components/TopPosts";
 import TrendingSubreddits from "../components/TrendingSubreddits";
 
-import testJson from "../resources/01-2020.json";
+import testJson from "../test-resources/01-2020.json";
 
 const Index = ({ pageProps }) => {
   const posts = pageProps.posts || [];
