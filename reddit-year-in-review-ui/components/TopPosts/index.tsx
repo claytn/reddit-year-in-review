@@ -6,8 +6,8 @@ const SingleDayPosts = ({ date, posts }) => (
     <Flex border="1px solid" borderColor="secondary">
       <code>{date}</code>
     </Flex>
-    {posts.map((post) => (
-      <PostPreview {...post} />
+    {posts.map(post => (
+      <PostPreview {...post} key={post.id} />
     ))}
   </Flex>
 );
@@ -22,7 +22,7 @@ const TopPosts = ({ posts, ...props }) => (
     {...props}
   >
     {posts.map(({ date, previews }) => (
-      <SingleDayPosts date={date} posts={previews} />
+      <SingleDayPosts date={date} posts={previews} key={date} />
     ))}
   </Flex>
 );

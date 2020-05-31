@@ -1,3 +1,6 @@
+import React from "react";
+import { GetStaticProps } from "next";
+import InferGetStaticPropsType from "next/types";
 import * as R from "ramda";
 import Layout from "../components/common/Layout";
 import { Flex } from "../components/common";
@@ -8,7 +11,18 @@ import TrendingSubreddits from "../components/TrendingSubreddits";
 
 import testJson from "../test-resources/01-2020.json";
 
-const Index = ({ pageProps }) => {
+export const getStaticProps: GetStaticProps = async context => {
+  /*  const res = await fetch("");
+  const posts = await res.json(); */
+
+  return {
+    props: {
+      posts: testJson,
+    },
+  };
+};
+
+const Index: React.FC<{ posts: object }> = pageProps => {
   const posts = pageProps.posts || [];
   return (
     <Layout>
@@ -19,16 +33,5 @@ const Index = ({ pageProps }) => {
     </Layout>
   );
 };
-
-export async function getStaticProps() {
-  /*  const res = await fetch("");
-  const posts = await res.json(); */
-
-  return {
-    props: {
-      posts: testJson,
-    },
-  };
-}
 
 export default Index;

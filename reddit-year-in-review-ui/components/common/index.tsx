@@ -1,12 +1,5 @@
 import styled from "styled-components";
-import {
-  space,
-  layout,
-  color,
-  flexbox,
-  typography,
-  border,
-} from "styled-system";
+import { space, layout, color, flexbox, typography, border } from "styled-system";
 import NextLink from "next/link";
 
 export const Box = styled.div`

@@ -64,7 +64,7 @@ const FilterOptoinsBar = () => {
   );
 };
 
-const Layout = ({ breakpoint, renderMobile, renderDesktop, children }) => {
+const Layout = ({ children }) => {
   /* const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {
