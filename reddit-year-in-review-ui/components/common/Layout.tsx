@@ -2,9 +2,9 @@ import { useContext } from "react";
 import Switch from "react-switch";
 
 import { Box, Flex, Text, Link } from ".";
-import { ThemeContext } from "../../contexts";
+import { ThemeContext } from "contexts";
 
-const NavBar = () => {
+const NavBar: React.FC = () => {
   return (
     <Flex
       height={35}
@@ -34,7 +34,7 @@ const NavBar = () => {
   );
 };
 
-const FilterOptoinsBar = () => {
+const FilterOptoinsBar: React.FC = () => {
   const [alternateThemeOn, toggleTheme] = useContext(ThemeContext);
   return (
     <Flex
@@ -64,7 +64,7 @@ const FilterOptoinsBar = () => {
   );
 };
 
-const Layout = ({ children }) => {
+const Layout: React.FC = ({ children }) => {
   /* const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {

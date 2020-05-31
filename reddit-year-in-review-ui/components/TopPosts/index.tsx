@@ -1,18 +1,26 @@
-import { Flex } from "../common";
+import React from "react";
+import { Flex } from "components/common";
 import PostPreview from "./PostPreview";
 
-const SingleDayPosts = ({ date, posts }) => (
+import { IPostPreview } from "types";
+
+interface IPostPreviewBlock {
+  date: string;
+  previews: IPostPreview[];
+}
+
+const SingleDayPreviews: React.FC<IPostPreviewBlock> = ({ date, previews }) => (
   <Flex flexDirection="column" mb={2}>
     <Flex border="1px solid" borderColor="secondary">
       <code>{date}</code>
     </Flex>
-    {posts.map(post => (
+    {previews.map(post => (
       <PostPreview {...post} key={post.id} />
     ))}
   </Flex>
 );
 
-const TopPosts = ({ posts, ...props }) => (
+const TopPosts: React.FC<{ posts: IPostPreviewBlock[] }> = ({ posts, ...props }) => (
   <Flex
     flexDirection="column"
     color="text"
@@ -22,7 +30,7 @@ const TopPosts = ({ posts, ...props }) => (
     {...props}
   >
     {posts.map(({ date, previews }) => (
-      <SingleDayPosts date={date} posts={previews} key={date} />
+      <SingleDayPreviews date={date} previews={previews} key={date} />
     ))}
   </Flex>
 );

@@ -1,6 +1,7 @@
-import { Flex } from "../common";
+import React from "react";
+import { Flex } from "components/common";
 
-const QuickSearch = ({ ...props }) => (
+const QuickSearch: React.FC = ({ ...props }) => (
   <Flex
     height={"100px"}
     color="text"

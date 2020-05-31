@@ -14,6 +14,7 @@
                                 "domain"
                                 "id"
                                 "is_reddit_media_domain"
+                                "is_self"
                                 "is_video"
                                 "media"
                                 "media_only"

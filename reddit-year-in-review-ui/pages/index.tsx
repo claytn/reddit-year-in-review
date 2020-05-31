@@ -2,14 +2,13 @@ import React from "react";
 import { GetStaticProps } from "next";
 import InferGetStaticPropsType from "next/types";
 import * as R from "ramda";
-import Layout from "../components/common/Layout";
-import { Flex } from "../components/common";
+import Layout from "components/common/Layout";
+import { Flex } from "components/common";
 
-import QuickSearch from "../components/QuickSearch";
-import TopPosts from "../components/TopPosts";
-import TrendingSubreddits from "../components/TrendingSubreddits";
+import QuickSearch from "components/QuickSearch";
+import TopPosts from "components/TopPosts";
 
-import testJson from "../test-resources/01-2020.json";
+import testJson from "test-resources/01-2020.json";
 
 export const getStaticProps: GetStaticProps = async context => {
   /*  const res = await fetch("");

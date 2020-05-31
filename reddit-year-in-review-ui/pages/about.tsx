@@ -1,6 +1,7 @@
-import { Flex, Box } from "../components/common";
+import React from "react";
+import { Flex } from "components/common";
 
-const About = () => {
+const About: React.FC = () => {
   return (
     <Flex
       m={2}
