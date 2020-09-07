@@ -9,7 +9,12 @@ class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap"
+            rel="stylesheet"
+          />
+        </Head>
         <body style={{ margin: 0 }}>
           <Main />
           <NextScript />

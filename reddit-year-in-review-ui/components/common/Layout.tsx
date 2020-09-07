@@ -7,17 +7,28 @@ import { ThemeContext } from "contexts";
 const NavBar: React.FC = () => {
   return (
     <Flex
-      height={35}
-      p={2}
+      height={45}
+      px={1}
+      pt={1}
       borderBottom="1px solid"
       flexDirection="row"
       justifyContent="space-between"
+      alignItems="flex-end"
+      backgroundColor="#cee3f8"
     >
-      <Text>a year in review for reddit (not afiliated with reddit)</Text>
-      <input
-        placeholder="Search"
-        style={{ display: "flex", flex: 1, marginLeft: 15, marginRight: 35 }}
-      />
+      <Flex alignItems="flex-start">
+        <Text
+          style={{
+            fontSize: 22,
+            fontFamily: "cursive",
+            paddingRight: 10,
+          }}
+        >
+          a year in review for...
+        </Text>
+        <img src="/assets/reddit_logo.png" alt="reddit" width="80" height="28" />
+      </Flex>
+
       <Flex>
         <Link href="about">
           <a>
@@ -82,7 +93,7 @@ const Layout: React.FC = ({ children }) => {
   return (
     <Box height="100vh" bg="bg">
       <NavBar />
-      <FilterOptoinsBar />
+      {/* <FilterOptoinsBar /> */}
       {children}
     </Box>
   );

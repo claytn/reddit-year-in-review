@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AppProps } from "next/app";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
+import "react-tabs/style/react-tabs.css";
 
 import { ThemeContext } from "../contexts";
 import { lightTheme, darkTheme } from "../theme";

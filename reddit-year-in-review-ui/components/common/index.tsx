@@ -6,7 +6,8 @@ export const Box = styled.div`
   ${space}
   ${layout}
   ${color}
-  ${border}`;
+  ${border}
+`;
 
 export const Flex = styled(Box)`
   display: flex;

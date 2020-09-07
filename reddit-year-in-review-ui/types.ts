@@ -4,6 +4,11 @@ export interface IAwarding {
   icon_url: string;
 }
 
+export interface IPostPreviewBlock {
+  date: string;
+  previews: IPostPreview[];
+}
+
 export interface IPostPreview {
   all_awardings: IAwarding[];
   author: string;
