@@ -1,25 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as R from "ramda";
-import { Flex } from "components/common";
+import { Flex, Text } from "components/common";
 import PostPreview from "./PostPreview";
+import { getOrdinalNum } from "utils";
 
 import { IPostPreviewBlock } from "types";
 
-const SingleDayPreviews: React.FC<IPostPreviewBlock> = ({ date, previews }) => (
-  <Flex flexDirection="column">
-    <Flex
-      borderTop="1px solid"
-      borderBottom="1px solid"
-      borderColor="#888"
-      marginBottom={1}
-    >
-      <code style={{ color: "#888" }}>{date}</code>
+const SingleDayPreviews: React.FC<IPostPreviewBlock> = ({ date, previews }) => {
+  const d = new Date(`${date}T00:00:00`);
+  const dayOfMonth = d.getDate();
+  const month = new Intl.DateTimeFormat("en", { month: "long" }).format(d);
+  const formattedDate = `${month} ${getOrdinalNum(dayOfMonth)}`;
+
+  return (
+    <Flex flexDirection="column">
+      <Flex my={2}>
+        <Text
+          borderStyle="solid"
+          borderColor="#ff4500"
+          borderTop="0"
+          borderBottom="0"
+          color="#888"
+          fontSize={10}
+          fontWeight="bold"
+          marginLeft={1}
+          px={1}
+        >
+          {formattedDate}
+        </Text>
+      </Flex>
+      {previews.map(post => (
+        <PostPreview {...post} key={post.id} />
+      ))}
     </Flex>
-    {previews.map(post => (
-      <PostPreview {...post} key={post.id} />
-    ))}
-  </Flex>
-);
+  );
+};
 
 const TopPosts: React.FC<{ posts: IPostPreviewBlock[] }> = ({ posts, ...props }) => {
   const [postPreviews, setPostPreviews] = useState(posts);

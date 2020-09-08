@@ -3,6 +3,8 @@ import { Flex, Text, Image, Link } from "components/common";
 import { formatNumber } from "utils";
 import { IPostPreview } from "types";
 
+const REDDIT_URL = "https://www.reddit.com";
+
 const PostPreview: React.FC<IPostPreview> = props => {
   const {
     all_awardings,
@@ -27,11 +29,25 @@ const PostPreview: React.FC<IPostPreview> = props => {
     url,
   } = props;
 
+  // console.log(props);
+
   const d = new Date(created * 1000);
-  const year = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
-  const dayOfMonth = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
-  const month = new Intl.DateTimeFormat("en", { month: "short" }).format(d);
-  const dayOfWeek = new Intl.DateTimeFormat("en", { weekday: "short" }).format(d);
+  const year = new Intl.DateTimeFormat("en", {
+    timeZone: "America/New_York",
+    year: "numeric",
+  }).format(d);
+  const dayOfMonth = new Intl.DateTimeFormat("en", {
+    timeZone: "America/New_York",
+    day: "2-digit",
+  }).format(d);
+  const month = new Intl.DateTimeFormat("en", {
+    timeZone: "America/New_York",
+    month: "short",
+  }).format(d);
+  const dayOfWeek = new Intl.DateTimeFormat("en", {
+    timeZone: "America/New_York",
+    weekday: "short",
+  }).format(d);
   const formattedDate = `${dayOfWeek} ${month} ${dayOfMonth} ${year}`;
   return (
     <Flex
@@ -39,34 +55,16 @@ const PostPreview: React.FC<IPostPreview> = props => {
       style={{ fontFamily: "verdana,arial,helvetica,sans-serif", marginBottom: 8 }}
     >
       <Flex
-        style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 4 }}
+        style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 4, width: 50 }}
         marginHorizontal="7px"
         flexDirection="column"
         alignItems="center"
       >
-        <div
-          style={{
-            backgroundImage:
-              "url(https://www.redditstatic.com/sprite-reddit.e5NqNKsOkdA.png)",
-            backgroundPosition: "-84px -1654px",
-            backgroundRepeat: "no-repeat",
-            width: 15,
-            height: 14,
-          }}
-        />
+        <div className="up-arrow" />
         <Text color="#c6c6c6" fontSize="13px" fontWeight="bold">
           {formatNumber(ups)}
         </Text>
-        <div
-          style={{
-            backgroundImage:
-              "url(https://www.redditstatic.com/sprite-reddit.e5NqNKsOkdA.png)",
-            backgroundPosition: "-42px -1654px",
-            backgroundRepeat: "no-repeat",
-            width: 15,
-            height: 14,
-          }}
-        />
+        <div className="down-arrow" />
       </Flex>
 
       <Flex style={{ marginRight: 5, marginBottom: 2 }}>
@@ -98,11 +96,17 @@ const PostPreview: React.FC<IPostPreview> = props => {
         <Flex flexDirection="row" pt={"1px"}>
           <Text style={{ color: "#888", fontSize: 10, fontWeight: 400 }}>
             submitted {formattedDate} by{" "}
-            <a href="/" style={{ paddingLeft: "0.5em", paddingRight: "0.5em" }}>
+            <a
+              href={`${REDDIT_URL}/u/${author}`}
+              style={{ paddingLeft: "0.5em", paddingRight: "0.5em" }}
+            >
               {author}
             </a>{" "}
             to{" "}
-            <a href="/" style={{ paddingLeft: "0.5em", paddingRight: "0.5em" }}>
+            <a
+              href={`${REDDIT_URL}/${subreddit_name_prefixed}`}
+              style={{ paddingLeft: "0.5em", paddingRight: "0.5em" }}
+            >
               {subreddit_name_prefixed}
             </a>
           </Text>
@@ -111,12 +115,14 @@ const PostPreview: React.FC<IPostPreview> = props => {
           <Link href="">
             <a className="post-options silent-link">{`${num_comments} comments`}</a>
           </Link>
-          <Link href="">
-            <a className="post-options silent-link">original post</a>
-          </Link>
-          <Link href="">
-            <a className="post-options silent-link">share</a>
-          </Link>
+
+          <a href={`${REDDIT_URL}${permalink}`} className="post-options silent-link">
+            original post
+          </a>
+
+          <a href="" className="post-options silent-link">
+            share
+          </a>
         </Flex>
       </Flex>
 
@@ -132,6 +138,22 @@ const PostPreview: React.FC<IPostPreview> = props => {
         }
         a.silent-link:hover {
           text-decoration: underline;
+        }
+
+        .up-arrow {
+          background-image: url(https://www.redditstatic.com/sprite-reddit.e5NqNKsOkdA.png);
+          background-position: -84px -1654px;
+          background-repeat: no-repeat;
+          width: 15px;
+          height: 14px;
+        }
+
+        .down-arrow {
+          background-image: url(https://www.redditstatic.com/sprite-reddit.e5NqNKsOkdA.png);
+          background-position: -42px -1654px;
+          background-repeat: no-repeat;
+          width: 15px;
+          height: 14px;
         }
       `}</style>
     </Flex>
