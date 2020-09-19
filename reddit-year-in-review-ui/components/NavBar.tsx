@@ -5,16 +5,28 @@ const NavBar: React.FC = () => {
   return (
     <Flex flexDirection="column">
       <Flex
-        height={18}
+        style={{
+          alignItems: "center",
+        }}
+        height={"18px"}
         backgroundColor="#f0f0f0"
         flexDirection="row"
-        padding="2px"
+        paddingLeft={1}
+        paddingRight={1}
+        paddingBottom={0}
         borderBottomStyle="solid"
         borderColor="rgb(128, 128, 128)"
         borderBottomWidth="1px"
       >
-        <Text fontSize="10px" color="#000">
-          FEATURED SUBREDDITS |
+        <Text
+          fontSize="10px"
+          color="#000"
+          fontWeight="400"
+          style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+        >
+          FEATURED SUBREDDITS | ASKREDDIT - HUMANSBEINGBROS - UNEXPECTED - MEMES - AWW -
+          GAMING - NEXTFUCKINGLEVEL - MILDLYINTERESTING - WELLTHATSUCKS - SHOWERTHOUGHTS -
+          BLACKPEOPLETWITTER - DANKMEMES - PUBLICFREAKOUT - WORLDNEWS
         </Text>
       </Flex>
       <Flex
@@ -27,17 +39,23 @@ const NavBar: React.FC = () => {
         alignItems="flex-end"
         backgroundColor="#cee3f8"
       >
-        <Flex alignItems="flex-start">
+        <Flex alignItems="flex-start" justifyContent="flex-end">
+          <img
+            style={{ paddingBottom: 10 }}
+            src="/assets/reddit_logo.png"
+            alt="reddit"
+            width="80"
+            height="28"
+          />
           <Text
             style={{
               fontSize: 22,
-              fontFamily: "cursive",
               paddingRight: 10,
+              fontFamily: "Pangolin, cursive",
             }}
           >
-            A year in review for...
+            ...year in review
           </Text>
-          <img src="/assets/reddit_logo.png" alt="reddit" width="80" height="28" />
           <Text style={{ marginLeft: 20, fontFamily: "monospace", alignSelf: "center" }}>
             (not affiliated with reddit)
           </Text>

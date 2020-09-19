@@ -13,7 +13,7 @@ const SingleDayPreviews: React.FC<IPostPreviewBlock> = ({ date, previews }) => {
   const formattedDate = `${month} ${getOrdinalNum(dayOfMonth)}`;
 
   return (
-    <Flex flexDirection="column">
+    <Flex flexDirection="column" marginBottom={3}>
       <Flex my={2}>
         <Text
           borderStyle="solid"
@@ -24,6 +24,7 @@ const SingleDayPreviews: React.FC<IPostPreviewBlock> = ({ date, previews }) => {
           fontSize={10}
           fontWeight="bold"
           marginLeft={1}
+          marginBottom={"10px"}
           px={1}
         >
           {formattedDate}
