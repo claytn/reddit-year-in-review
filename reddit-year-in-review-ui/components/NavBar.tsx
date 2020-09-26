@@ -67,15 +67,16 @@ const NavBar: React.FC<Props> = ({ activePage }) => {
           >
             ...year in review
           </Text>
-          <Text style={{ marginLeft: 20, fontFamily: "monospace", alignSelf: "center" }}>
-            (not affiliated with reddit)
-          </Text>
         </Flex>
         <Flex>
           {tabs.map(({ name, route }) => (
-            <Tab active={name === activePage} label={name} route={route} />
+            <Tab active={name === activePage} label={name} route={route} key={name} />
           ))}
         </Flex>
+
+        <Text style={{ marginLeft: 20, fontFamily: "monospace", alignSelf: "flex-end" }}>
+          (not affiliated with reddit)
+        </Text>
       </Flex>
     </Flex>
   );

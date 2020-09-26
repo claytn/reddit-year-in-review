@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as R from "ramda";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { Flex, Text } from "components/common";
 import PostPreview from "./PostPreview";
 import { getOrdinalNum } from "utils";
@@ -13,7 +14,7 @@ const SingleDayPreviews: React.FC<IPostPreviewBlock> = ({ date, previews }) => {
   const formattedDate = `${month} ${getOrdinalNum(dayOfMonth)}`;
 
   return (
-    <Flex flexDirection="column" marginBottom={3}>
+    <Flex flexDirection="column" marginBottom={2}>
       <Flex my={2}>
         <Text
           borderStyle="solid"
@@ -38,52 +39,44 @@ const SingleDayPreviews: React.FC<IPostPreviewBlock> = ({ date, previews }) => {
 };
 
 const TopPosts: React.FC<{ posts: IPostPreviewBlock[] }> = ({ posts, ...props }) => {
-  const [postPreviews, setPostPreviews] = useState(posts);
-  const [isFetching, setIsFetching] = useState(false);
-
-  const topPostsContainerDefaultHeight = 14058; // update this later.
-  const topPostsRef = useRef(null);
-
-  const handleScroll = () => {
-    const containerHeight = R.pathOr(
-      topPostsContainerDefaultHeight,
-      ["current", "clientHeight"],
-      topPostsRef
-    );
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-      0.75 * containerHeight
-    ) {
-      setIsFetching(true);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (isFetching) {
-      console.log("Fetching a fresh batch :)");
-      // fetch updated items here.
-      fetch(
-        `https://7a3kude68l.execute-api.us-east-2.amazonaws.com/dev/month-previews/${2}`
-      )
-        .then(res => res.json())
-        .then(newPreviews => {
-          console.log(newPreviews);
-          setPostPreviews([...postPreviews, ...newPreviews]);
-          setIsFetching(false);
-        });
-    }
-  }, [isFetching]);
+  const router = useRouter();
+  const { month = "1" } = router.query;
+  const monthInt = parseInt(month as string);
+  const lastPage = monthInt === 12;
 
   return (
-    <Flex ref={topPostsRef} flexDirection="column" color="text" bg="bg" {...props}>
-      {postPreviews.map(({ date, previews }) => (
+    <Flex flexDirection="column" color="text" bg="bg" {...props}>
+      {posts.map(({ date, previews }) => (
         <SingleDayPreviews date={date} previews={previews} key={date} />
       ))}
+      {!lastPage && (
+        <Flex alignItems="center">
+          <Text color="gray" fontSize={12} px={1}>
+            view more:{" "}
+          </Text>
+          <div>
+            <Link href={`/?month=${monthInt + 1}`}>
+              <a
+                style={{
+                  padding: "1px 4px",
+                  background: "#eee",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  borderColor: "#ddd",
+                  borderRadius: 3,
+                  fontWeight: "bold",
+                  textDecoration: "none",
+                  fontFamily: "verdana,arial,helvetica,sans-serif",
+                  color: "#369",
+                  fontSize: 12,
+                }}
+              >
+                next ›
+              </a>
+            </Link>
+          </div>
+        </Flex>
+      )}
     </Flex>
   );
 };
