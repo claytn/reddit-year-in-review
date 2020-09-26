@@ -1,10 +1,15 @@
 import NavBar from "components/NavBar";
-import { Box, Flex, Text, Link } from ".";
+import { Box } from ".";
+import { IPage } from "pages/types";
 
-const Layout: React.FC = ({ children }) => {
+interface Props {
+  page: IPage;
+}
+
+const Layout: React.FC<Props> = ({ page, children }) => {
   return (
     <Box height="100vh" bg="bg">
-      <NavBar />
+      <NavBar activePage={page} />
       {children}
     </Box>
   );

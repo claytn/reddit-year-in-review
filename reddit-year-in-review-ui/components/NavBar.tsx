@@ -1,7 +1,18 @@
 import React from "react";
 import { Flex, Text } from "components/common";
+import { IPage } from "pages/types";
+import Tab from "components/Tab";
 
-const NavBar: React.FC = () => {
+const tabs: Array<{ name: IPage; route: string }> = [
+  { name: "top", route: "/" },
+  { name: "about", route: "/about" },
+];
+
+interface Props {
+  activePage: IPage;
+}
+
+const NavBar: React.FC<Props> = ({ activePage }) => {
   return (
     <Flex flexDirection="column">
       <Flex
@@ -59,6 +70,11 @@ const NavBar: React.FC = () => {
           <Text style={{ marginLeft: 20, fontFamily: "monospace", alignSelf: "center" }}>
             (not affiliated with reddit)
           </Text>
+        </Flex>
+        <Flex>
+          {tabs.map(({ name, route }) => (
+            <Tab active={name === activePage} label={name} route={route} />
+          ))}
         </Flex>
       </Flex>
     </Flex>

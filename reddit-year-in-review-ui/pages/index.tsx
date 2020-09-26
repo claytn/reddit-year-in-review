@@ -23,10 +23,10 @@ export const getStaticProps: GetStaticProps = async context => {
 const Index: React.FC<{ posts: any[] }> = pageProps => {
   const posts = pageProps.posts || [];
   return (
-    <Layout>
+    <Layout page={"top"}>
       <Flex flexDirection="row">
         <TopPosts posts={posts} m={1} width={[1]} />
-        <QuickSearch width={[1 / 3]} />
+        {/* <QuickSearch width={[1 / 3]} /> */}
       </Flex>
     </Layout>
   );

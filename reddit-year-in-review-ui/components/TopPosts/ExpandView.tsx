@@ -9,7 +9,6 @@ const ExpandView: React.FC<ExpandViewProps> = ({ media }) => {
   const redditVideo = R.prop("reddit_video", media);
   const oembed = R.prop("oembed", media);
   if (redditVideo) {
-    console.log("redditvideo ", redditVideo);
     const { fallback_url } = redditVideo;
     return (
       <iframe
