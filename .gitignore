@@ -1,7 +1,9 @@
 node_modules/
 *.zip
 *.env
+*.env.local
 .idea/
 .next/
 .DS_Store
 reddit-year-in-review-ui/test-resources/
+year-to-date-post-ids.edn

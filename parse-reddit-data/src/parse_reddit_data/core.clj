@@ -68,24 +68,19 @@
            :ret (spec/* map?)
            :fn #(= (count (:ret %)) (-> % :args :n)))
 
-(defn filter-awardings [awards]
-  (map #(select-keys % (vec REQUIRED_AWARDING_KEYS)) awards))
-
-(defn filter-comments [comments]
-  (let [filter-comment-data
+(defn groom-comments [comments]
+  (let [groom-comment-data
         (fn [comment]
           (-> comment
               (select-keys (vec REQUIRED_COMMENT_KEYS))
-              (update "author" #(get-in % ["author" "name"]))
-              (update "all_awardings" filter-awardings)))]
-    (map filter-comment-data comments)))
+              (update "author" #(get % "name"))))]
+    (map groom-comment-data comments)))
 
 (defn groom-post-data [post]
   (-> post
       (select-keys (vec REDDIT_POST_KEYS))
       (update "author" #(get % "name"))
-      (update "comments" filter-comments)
-      (update "all_awardings" filter-awardings)))
+      (update "comments" groom-comments)))
 
 (defn update-post-id [post date-string]
   "Creates a unique ID for each post using it's original id (from reddit) and the date the post
@@ -117,18 +112,21 @@
 
 (defn aggregate-reddit-data-for-days
   "Aggregates reddit posts for a range of dates"
-  [from to]
-  (let [dates (d/date-range from to)]
-    (loop [date-strings (map d/unparse-date dates)
-           post-aggregates []
-           prev-top-post-ids #{}]
-      (if (empty? date-strings)
-        post-aggregates
-        (let [current-day (first date-strings)
-              current-day-data (aggregate-single-day-reddit-posts current-day prev-top-post-ids)]
-          (recur (rest date-strings)
-                 (conj post-aggregates (select-keys current-day-data [:date :posts]))
-                 (union prev-top-post-ids (get current-day-data :post-reddit-ids))))))))
+  ([from to]
+   (aggregate-reddit-data-for-days from to #{}))
+  ([from to top-post-ids]
+    (let [dates (d/date-range from to)]
+      (loop [date-strings (map d/unparse-date dates)
+             post-aggregates []
+             prev-top-post-ids top-post-ids]
+        (if (empty? date-strings)
+          (do (clojure.pprint/pprint prev-top-post-ids)
+            post-aggregates)
+          (let [current-day (first date-strings)
+                current-day-data (aggregate-single-day-reddit-posts current-day prev-top-post-ids)]
+            (recur (rest date-strings)
+                   (conj post-aggregates (select-keys current-day-data [:date :posts]))
+                   (union prev-top-post-ids (get current-day-data :post-reddit-ids)))))))))
 
 (defn aggregate-reddit-data-for-month
   "Aggregates reddit posts and trending subreddits for a single month"
@@ -146,34 +144,33 @@
         previews (map get-preview-keys posts)]
     {:date date :previews previews}))
 
+;; DEPRECATED - POST DETAIL SCREEN REQUIRES ALL POST DATA KEYS
 (defn get-posts-detail-data [{:keys [posts]}]
-  (let [get-detail-keys #(select-keys % (vec REDDIT_POST_DETAIL_KEYS))]
+  (let [get-detail-keys #(select-keys % (vec REDDIT_POST_KEYS))]
     (map get-detail-keys posts)))
 
 (defn populate-month-aggregate-datastores [month]
   "Given a month (int), aggregates the top reddit posts, and writes to our datastores (S3, DynamoDB)"
   (let [month-post-data  (aggregate-reddit-data-for-month month)
-        month-post-previews (pmap get-posts-preview-data month-post-data)
-        month-post-details (pmap get-posts-detail-data month-post-data)]
+        month-post-previews (pmap get-posts-preview-data month-post-data)]
 
+    (println "Writing Post Preview Data to S3")
     ;; Write preview data to S3 store
-    (write-to-s3-as-json
-      "aggregated-reddit-data"
-      (str "TopPosts/" (format "%02d" month) "-" YEAR) ;; "TopPosts/MM-YYYY"
-      month-post-previews)
 
-    ;; Write post detail data to DynamoDB
-    (let [create-put-request (fn [post-detail]
-                               {:put-request
-                                {:item {:id (get post-detail "id")
-                                        :details (json/write-str (dissoc post-detail "id"))}}})
-          requests (map create-put-request (flatten month-post-details))
-          ;; DynamoDB batch-write limits 25 requests
-          partitioned-batch-requests (partition-all 25 requests)]
-      (doseq [batch partitioned-batch-requests]
-        (dynamo/batch-write-item
-          cred
-          :request-items {"reddit-post-details" batch})))))
+      (write-to-s3-as-json
+        "aggregated-reddit-data"
+        (str "TopPosts/" (format "%02d" month) "-" YEAR) ;; "TopPosts/MM-YYYY"
+        month-post-previews)
+
+
+    (println "Writing Post Detail Data to S3")
+    ;; Write post detail data to S3 store
+
+    (doseq [post-detail (flatten (pmap get-posts-detail-data month-post-data))]
+      (write-to-s3-as-json
+        "aggregated-reddit-data"
+        (str "PostDetails/" (get post-detail "id"))
+        (dissoc post-detail "id")))))
 
 
 (def command-line-error-message "Must include a valid month (1-12).\nExamples:

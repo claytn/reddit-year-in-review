@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { space, layout, color, flexbox, typography, border } from "styled-system";
-import NextLink from "next/link";
 
 export const Box = styled.div`
   ${space}
@@ -15,13 +14,9 @@ export const Flex = styled(Box)`
 `;
 
 export const Text = styled(Flex)`
-  ${typography}
   font-family: Verdana, arial, helvetica, sans-serif;
-`;
-
-export const Link = styled(NextLink)`
+  ${typography}
   ${space}
-  ${layout}
 `;
 
 export const Image = styled.img`

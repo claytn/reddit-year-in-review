@@ -1,8 +1,4 @@
-export interface IAwarding {
-  count: number;
-  name: string;
-  icon_url: string;
-}
+export type IPage = "top" | "about";
 
 export interface IPostPreviewBlock {
   date: string;
@@ -10,7 +6,6 @@ export interface IPostPreviewBlock {
 }
 
 export interface IPostPreview {
-  all_awardings: IAwarding[];
   author: string;
   created: number;
   domain?: string;
@@ -25,15 +20,12 @@ export interface IPostPreview {
   post_hint?: string;
   subreddit_name_prefixed: string;
   thumbnail?: string;
-  thumbnailHeight?: number;
-  thumbnailWidth?: number;
   title: string;
   ups: number;
   url: string;
 }
 
 export interface IComment {
-  all_awardings: IAwarding[];
   author: string;
   body: string;
   body_html: string;

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 
 interface TabProps {
   active?: boolean;
@@ -14,7 +14,7 @@ const Tab: React.FC<TabProps> = ({ active, label, route }) => {
         <a
           style={{
             textDecoration: "none",
-            color: active ? "orangered" : "#369",
+            color: active ? "#ff4500" : "#369",
           }}
         >
           {label}
@@ -28,15 +28,15 @@ const Tab: React.FC<TabProps> = ({ active, label, route }) => {
             font-weight: bold;
             font-family: verdana, arial, helvetica, sans-serif;
             padding: 2px 6px 0 6px;
-            background-color: rgb(239, 247, 255);
+            background-color: #eff7ff;
             margin: 0 3px;
             margin-bottom: -1px;
             border-bottom: 1px solid #5f99cf;
           }
           .active-tab {
-            background-color: rgb(255, 255, 255);
+            background-color: #ffffff;
             border: 1px solid #5f99cf;
-            border-bottom-color: rgb(255, 255, 255);
+            border-bottom-color: #ffffff;
             z-index: 100;
           }
         `}

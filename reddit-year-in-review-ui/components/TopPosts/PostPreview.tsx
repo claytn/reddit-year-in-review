@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import * as R from "ramda";
-import { Flex, Text, Image, Link } from "components/common";
-import { TextThumbnail, MediaThumbnail, LinkThumbnail } from "components/thumbnails";
+import { Flex, Box, Text, Image } from "components/common";
+import { TextThumbnail, LinkThumbnail } from "components/thumbnails";
 import { MediaExpand, MediaMinimize } from "components/icons";
-import ExpandView from "./ExpandView";
+import ExpandedView from "./ExpandedView";
 import { formatNumber } from "utils";
 import { IPostPreview } from "types";
 
@@ -19,9 +20,13 @@ const getThumbnailComponent = thumbnail => {
   }
 };
 
-const PostPreview: React.FC<IPostPreview> = props => {
+interface PreviewProps {
+  expanded?: boolean;
+  selftext_html?: string;
+}
+
+const PostPreview: React.FC<IPostPreview & PreviewProps> = props => {
   const {
-    all_awardings,
     author,
     created,
     domain,
@@ -36,12 +41,12 @@ const PostPreview: React.FC<IPostPreview> = props => {
     post_hint,
     subreddit_name_prefixed,
     thumbnail,
-    thumbnailHeight,
-    thumbnailWidth,
     title,
     ups,
     url,
   } = props;
+
+  const isLink = R.equals(post_hint, "link");
 
   const d = new Date(created * 1000);
   const year = new Intl.DateTimeFormat("en", {
@@ -64,17 +69,25 @@ const PostPreview: React.FC<IPostPreview> = props => {
   const Thumbnail = getThumbnailComponent(thumbnail);
 
   const mediaPost = R.not(R.isNil(media));
-  const [showExpandedMedia, setShowExpandedMedia] = useState(false);
+  const imagePost = R.equals(post_hint, "image");
+  const expandableMedia = mediaPost || imagePost;
+
+  const selfText = props.selftext_html;
+
+  const [showExpandedMedia, setShowExpandedMedia] = useState(props.expanded);
 
   return (
     <Flex flexDirection="column">
       <Flex
+        style={{ fontFamily: "Verdana,arial,helvetica,sans-serif" }}
         flexDirection="row"
-        style={{ fontFamily: "verdana,arial,helvetica,sans-serif", marginBottom: 8 }}
+        mb={8}
       >
         <Flex
           flex={"0 0 6.1ex"}
-          style={{ paddingLeft: 5, paddingRight: 5, paddingTop: 4 }}
+          pl={5}
+          pr={5}
+          pt={4}
           marginHorizontal="7px"
           flexDirection="column"
           alignItems="center"
@@ -87,23 +100,25 @@ const PostPreview: React.FC<IPostPreview> = props => {
           <div className="down-arrow" />
         </Flex>
 
-        <div style={{ marginRight: 5, marginBottom: 2, width: 75 }}>
+        <Box marginRight={4} marginBottom={4} width={75}>
           <Thumbnail />
-        </div>
+        </Box>
         <Flex flex={1} flexDirection="column">
-          <div>
-            <a
-              style={{
-                fontSize: 16,
-                fontWeight: 400,
-                textDecoration: "none",
-                color: "#0000ff",
-                marginRight: "0.4em",
-                display: "inline",
-              }}
-            >
-              {title}
-            </a>
+          <Box>
+            <Link href={isLink ? url : `/post/${id}`}>
+              <a
+                style={{
+                  fontSize: 16,
+                  fontWeight: 400,
+                  textDecoration: "none",
+                  color: "#0000ff",
+                  marginRight: "0.4em",
+                  display: "inline",
+                }}
+              >
+                {title}
+              </a>
+            </Link>
 
             <span style={{ color: "#888", fontSize: 10 }}>
               (
@@ -112,9 +127,9 @@ const PostPreview: React.FC<IPostPreview> = props => {
               </a>
               )
             </span>
-          </div>
+          </Box>
           <Flex flexDirection="row">
-            {mediaPost &&
+            {expandableMedia &&
               (showExpandedMedia ? (
                 <MediaMinimize
                   style={{ paddingRight: 5, paddingTop: 2, cursor: "pointer" }}
@@ -132,7 +147,7 @@ const PostPreview: React.FC<IPostPreview> = props => {
               ))}
             <Flex flexDirection="column">
               <Flex flexDirection="row" pt={"1px"}>
-                <Text style={{ color: "#888", fontSize: 10, fontWeight: 400 }}>
+                <Text color="#888" fontSize={10} fontWeight={"400"}>
                   submitted {formattedDate} by{" "}
                   <a
                     href={`${REDDIT_URL}/u/${author}`}
@@ -149,8 +164,8 @@ const PostPreview: React.FC<IPostPreview> = props => {
                   </a>
                 </Text>
               </Flex>
-              <Flex flexDirection="row" pt={"1px"}>
-                <Link href="">
+              <Flex flexDirection="row" pt={1}>
+                <Link href={`/post/${id}`}>
                   <a className="post-options silent-link">{`${num_comments} comments`}</a>
                 </Link>
 
@@ -167,7 +182,32 @@ const PostPreview: React.FC<IPostPreview> = props => {
               </Flex>
             </Flex>
           </Flex>
-          {mediaPost && showExpandedMedia ? <ExpandView media={media} /> : null}
+          {expandableMedia && showExpandedMedia ? (
+            <Box marginTop={8}>
+              <ExpandedView
+                media={media}
+                url={url}
+                type={mediaPost ? "MEDIA_EMBED" : "URL_IMAGE"}
+              />
+            </Box>
+          ) : null}
+          {selfText && showExpandedMedia ? (
+            <Box
+              bg="#fafafa"
+              borderWidth={1}
+              borderStyle="solid"
+              borderColor="#369"
+              borderRadius={7}
+              py={5}
+              px={10}
+              my={5}
+            >
+              <div
+                className="dangerously-set-html"
+                dangerouslySetInnerHTML={{ __html: selfText }}
+              />
+            </Box>
+          ) : null}
         </Flex>
       </Flex>
 

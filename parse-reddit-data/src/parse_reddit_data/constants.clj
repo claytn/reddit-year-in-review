@@ -8,8 +8,7 @@
                                "selftext"
                                "selftext_html"})
 
-(def REDDIT_POST_PREVIEW_KEYS #{"all_awardings"
-                                "author"
+(def REDDIT_POST_PREVIEW_KEYS #{"author"
                                 "created"
                                 "domain"
                                 "id"
@@ -23,22 +22,15 @@
                                 "post_hint"
                                 "subreddit_name_prefixed"
                                 "thumbnail"
-                                "thumbnail_height"
-                                "thumbnail_width"
                                 "title"
                                 "ups"
                                 "url"})
 
 (def REDDIT_POST_KEYS (set/union REDDIT_POST_PREVIEW_KEYS REDDIT_POST_DETAIL_KEYS))
 
-(def REQUIRED_COMMENT_KEYS #{"all_awardings"
-                            "author"
+(def REQUIRED_COMMENT_KEYS #{"author"
                             "body"
                             "body_html"
                             "created"
                             "permalink"
                             "ups"})
-
-(def REQUIRED_AWARDING_KEYS #{"count"
-                             "icon_url"
-                             "name"})
