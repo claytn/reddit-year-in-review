@@ -1,36 +1,15 @@
 # parse-reddit-data
 
-FIXME: description
-
-## Installation
-
-Download from http://example.com/FIXME.
+This repository contains code for managing the data collected directly from reddit's api. The two main pieces are data migration between a few AWS data stores and generating the top reddit posts for each day.
 
 ## Usage
 
-FIXME: explanation
+The core namespace contains command line support, but I almost always just ran this code inside a repl.
 
-    $ java -jar parse-reddit-data-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
 
 ## License
 
-Copyright © 2020 FIXME
+Copyright © 2020
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
