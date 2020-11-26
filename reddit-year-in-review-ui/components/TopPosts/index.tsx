@@ -16,6 +16,10 @@ const SingleDayPreviews: React.FC<IPostPreviewBlock> = ({ date, previews }) => {
   const month = new Intl.DateTimeFormat("en", { month: "long" }).format(d);
   const formattedDate = `${month} ${getOrdinalNum(dayOfMonth)}`;
 
+  if (previews.length === 0) {
+    return null;
+  }
+
   return (
     <Flex flexDirection="column" mb={8}>
       <Flex my={8}>
