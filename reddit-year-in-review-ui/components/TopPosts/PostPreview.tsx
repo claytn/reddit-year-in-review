@@ -175,10 +175,6 @@ const PostPreview: React.FC<IPostPreview & PreviewProps> = props => {
                 >
                   original post
                 </a>
-
-                <a href="" className="post-options silent-link">
-                  share
-                </a>
               </Flex>
             </Flex>
           </Flex>
