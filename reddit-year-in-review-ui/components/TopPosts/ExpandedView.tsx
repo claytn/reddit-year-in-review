@@ -13,7 +13,25 @@ interface ExpandViewProps {
 
 const ExpandedView: React.FC<ExpandViewProps> = ({ type, media, url }) => {
   if (type === "URL_IMAGE") {
-    return <Image src={url} maxHeight={700} maxWidth={500} />;
+    return (
+      <>
+        <Image src={url} className="expanded-image" />
+        <style jsx global>
+          {`
+            .expanded-image {
+              max-height: 700px;
+              max-width: 500px;
+            }
+            @media (max-width: 768px) {
+              .expanded-image {
+                max-height: 600px;
+                max-width: 400px;
+              }
+            }
+          `}
+        </style>
+      </>
+    );
   } else if (type === "MEDIA_EMBED") {
     const redditVideo = R.prop("reddit_video", media);
     const oembed = R.prop("oembed", media);
