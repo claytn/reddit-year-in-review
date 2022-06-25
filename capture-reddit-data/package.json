@@ -9,7 +9,7 @@
     "axios": "^0.19.0",
     "date-fns": "2.9.0",
     "dotenv": "^8.2.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "ramda": "^0.26.1",
     "snoowrap": "^1.20.1"
   }
